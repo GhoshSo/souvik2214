@@ -34,21 +34,68 @@ view: order_items {
 
   dimension_group: returned {
     type: time
-    # timeframes: [
-    #   raw,
-    #   time,
-    #   date,
-    #   week,
-    #   month,
-    #   quarter,
-    #   year
-    # ]
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
     sql: ${TABLE}.returned_at ;;
+  }
+
+  parameter: time_gran {
+    label: "Time period"
+    description: "Time period : Daily, weekly, monthly or overall"
+    type: unquoted
+    allowed_value: {
+      label: "Daily"
+      value: "PROD_REPORT.DATA.R_CRM_METRIC_SUMMARY"
+    }
+
+    allowed_value: {
+      label: "Weekly"
+      value: "PROD_REPORT.DATA.R_CRM_METRIC_SUMMARY_WEEKLY"
+    }
+
+    allowed_value: {
+      label: "Monthly"
+      value: "PROD_REPORT.DATA.R_CRM_METRIC_SUMMARY_MONTHLY"
+    }
+    default_value: "PROD_REPORT.DATA.R_CRM_METRIC_SUMMARY"
+  }
+
+  dimension_group: Time_granularity {
+    type: time
+    label: "Time granularity"
+    timeframes: [date, week, month]
+    sql: ${TABLE}.returned_at ;;
+  }
+
+  dimension: column1 {
+    hidden: no
+    label: "Column 1"
+    label_from_parameter: time_gran
+    group_label: "Parameter Column"
+    type: string
+    sql:
+    {% if time_gran._parameter_value == "PROD_REPORT.DATA.R_CRM_METRIC_SUMMARY"%} ${Time_granularity_date}
+    {% elsif time_gran._parameter_value == "PROD_REPORT.DATA.R_CRM_METRIC_SUMMARY_MONTHLY"%} ${Time_granularity_month}
+    {% elsif time_gran._parameter_value == "PROD_REPORT.DATA.R_CRM_METRIC_SUMMARY_WEEKLY"%} ${Time_granularity_week}
+    {%else%} NULL
+    {% endif %};;
   }
 
   dimension: sale_price {
     type: number
     sql: ${TABLE}.sale_price ;;
+  }
+
+  measure: sale_measure {
+    type: number
+    sql: ${sale_price} ;;
   }
 
   # A measure is a field that uses a SQL aggregate function. Here are defined sum and average
@@ -65,8 +112,16 @@ view: order_items {
     sql: ${sale_price} ;;
   }
 
+  measure: div_test {
+    type:  number
+    label: "The Div Test"
+    sql: ${total_sale_price}/${average_sale_price} ;;
+  }
+
   measure: count {
     type: count
-    drill_fields: [id, orders.id, inventory_items.id]
+    drill_fields: [id, Time_granularity_date]
   }
+
+
 }

@@ -3,6 +3,9 @@ connection: "thelook"
 
 # include all the views
 include: "/views/**/*.view"
+include: "/dimensionalize_measure.view.lkml"
+include: "/kuchvi.dashboard.lookml"
+
 
 # Datagroups define a caching policy for an Explore. To learn more,
 # use the Quick Help panel on the right to see documentation.
@@ -232,7 +235,14 @@ explore: ten_million_orders {
 
 explore: test {}
 
-explore: users {}
+explore: users {
+  join: dimensionalize_measure {
+    type: left_outer
+    sql_on: ${users.id} = ${dimensionalize_measure.users_id} ;;
+    relationship: many_to_one
+  }
+}
+
 
 explore: user_data {
   join: users {
@@ -277,3 +287,5 @@ explore: xss_test_7 {}
 explore: xss_test_8 {}
 
 explore: xss_test_9 {}
+
+week_start_day: sunday

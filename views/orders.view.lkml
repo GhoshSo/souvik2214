@@ -34,6 +34,11 @@ view: orders {
   # A dimension is a groupable field that can be used to filter query results.
   # This dimension will be called "Status" in Explore.
 
+  measure: max_created {
+    type: date
+    sql: MAX(${created_date}) ;;
+  }
+
   dimension: status {
     type: string
     sql: ${TABLE}.status ;;

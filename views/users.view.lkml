@@ -52,15 +52,15 @@ view: users {
 
   dimension_group: created {
     type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
+    # timeframes: [
+    #   raw,
+    #   time,
+    #   date,
+    #   week,
+    #   month,
+    #   quarter,
+    #   year
+    # ]
     sql: ${TABLE}.created_at ;;
   }
 
@@ -94,9 +94,20 @@ view: users {
     sql: ${TABLE}.zip ;;
   }
 
+
   measure: count {
     type: count
     drill_fields: [detail*]
+  }
+
+  measure: agg {
+    type: number
+    sql: ${average_age}/${count} ;;
+  }
+
+  measure: agg2 {
+    type: number
+    sql: ${agg}+${count}+${average_age} ;;
   }
 
   # ----- Sets of fields for drilling ------
