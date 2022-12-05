@@ -3,8 +3,8 @@ connection: "thelook"
 
 # include all the views
 include: "/views/**/*.view"
-include: "/dimensionalize_measure.view.lkml"
 include: "/kuchvi.dashboard.lookml"
+include: "/filter_bar_issue_check.dashboard.lookml"
 
 
 # Datagroups define a caching policy for an Explore. To learn more,

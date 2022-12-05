@@ -1,5 +1,6 @@
 view: sql_runner_query {
   derived_table: {
+    datagroup_trigger: souvik2214_default_datagroup
     sql: SELECT
           users.state  AS `users.state`,
               AVG(users.age ) / COUNT(*) AS `users.agg`,
@@ -12,6 +13,7 @@ view: sql_runner_query {
       LIMIT 500
        ;;
   }
+
 
   measure: count {
     type: count
